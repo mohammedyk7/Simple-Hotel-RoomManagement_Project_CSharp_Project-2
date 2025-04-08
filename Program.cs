@@ -95,7 +95,7 @@ class HotelReservationSystem
             if (exists)
             {
                 Console.WriteLine("Room number already exists.");
-                return;
+                return; //to exit the method
             }
 
             Console.Write("Enter daily rate: ");
@@ -132,22 +132,22 @@ class HotelReservationSystem
         try
         {
             Console.WriteLine("\nAll Rooms:");
-            for (int i = 0; i < roomCount; i++)
+            for (int i = 0; i < roomCount; i++) //the for loop iterates through the list of rooms (roomCount), checking whether each room is reserved or not using the isReserved[i] array.
             {
-                if (isReserved[i])
+                if (isReserved[i]) //condition 
                 {
-                    double totalCost = roomRates[i] * nights[i];
-                    Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Reserved by: {guestNames[i]} - Total Cost: {totalCost:C}");
+                    double totalCost = roomRates[i] * nights[i]; //f the room is reserved (isReserved[i] is true), the total cost of the room is calculated using the formula
+                    Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Reserved by: {guestNames[i]} - Total Cost: {totalCost:C}"); //"-" as a separator
                 }
                 else
                 {
-                    Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Available");
+                    Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Available"); //if the room is not reserved (isReserved[i] is false), the code prints the room number, rate, and a message indicating that the room is available
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) //to catch any potential error in the block
         {
-            Console.WriteLine($"An error occurred while viewing all rooms: {ex.Message}");
+            Console.WriteLine($"An error occurred while viewing all rooms: {ex.Message}"); //If an error happens, it will display a message 
         }
     }
 
@@ -155,22 +155,24 @@ class HotelReservationSystem
     {
         try
         {
-            Console.Write("Enter room number: ");
-            if (!int.TryParse(Console.ReadLine(), out int roomNumber))
+            Console.Write("Enter room number: "); //room must exist 
+            if (!int.TryParse(Console.ReadLine(), out int roomNumber)) //check if the user entered a valid integer for the room number. If it's invalid, the system will display "Invalid room number" and exit the method using return.
+                                                                       //! logical not "out"pass the roomNumber
+
             {
                 Console.WriteLine("Invalid room number.");
+                return; //exit the methoid after checking 
+            }
+
+            int index = Array.IndexOf(roomNumbers, roomNumber, 0, roomCount);//checks if the entered room number exists in the roomNumbers
+            if (index == -1) //if not found (0=starting index from where to begin the search)
+            {
+                Console.WriteLine("Room not found."); //when index == -1 means roomnumbers is not found 
                 return;
             }
 
-            int index = Array.IndexOf(roomNumbers, roomNumber, 0, roomCount);
-            if (index == -1)
-            {
-                Console.WriteLine("Room not found.");
-                return;
-            }
-
-            if (isReserved[index])
-            {
+            if (isReserved[index]) // checks if the room that found index is already reserved.
+                {
                 Console.WriteLine("Room is already reserved.");
                 return;
             }
@@ -178,19 +180,19 @@ class HotelReservationSystem
             Console.Write("Enter guest name: ");
             string guestName = Console.ReadLine();
 
-            Console.Write("Enter number of nights: ");
-            if (!int.TryParse(Console.ReadLine(), out int numberOfNights) || numberOfNights <= 0)
-            {
+            Console.Write("Enter number of nights: "); // to validate the input.
+            if (!int.TryParse(Console.ReadLine(), out int numberOfNights) || numberOfNights <= 0) // (second condition) If the value is invalid or less than or equal to 0, it prints "Number of nights must be greater than 0" and exits
+            { // used the logical or to check if the first is true. to check number <=0
                 Console.WriteLine("Number of nights must be greater than 0.");
-                return;
+                return; //if 5 is typed it will return true else false // exit if not greater than 0
             }
 
-            guestNames[index] = guestName;
-            nights[index] = numberOfNights;
+            guestNames[index] = guestName; // When a room is successfully reserved, the guest's name is stored at the index
+            nights[index] = numberOfNights; //stores the number of nights the guest has reserved for the room
             bookingDates[index] = DateTime.Now;
-            isReserved[index] = true;
+            isReserved[index] = true; //indicating that the room is now reserve
 
-            Console.WriteLine($"Room {roomNumber} reserved for {guestName} for {numberOfNights} nights.");
+            Console.WriteLine($"Room {roomNumber} reserved for {guestName} for {numberOfNights} nights."); // example: room 101 reserved for mohammed for 2 nights 
         }
         catch (Exception ex)
         {
@@ -205,11 +207,11 @@ class HotelReservationSystem
             Console.WriteLine("\nReservations:");
             for (int i = 0; i < roomCount; i++)
             {
-                if (isReserved[i])
+                if (isReserved[i]) //if its true 
                 {
-                    double totalCost = roomRates[i] * nights[i];
+                    double totalCost = roomRates[i] * nights[i]; //if the room is reserved it will calculate then view 
                     Console.WriteLine($"Room {roomNumbers[i]} - Guest: {guestNames[i]} - Nights: {nights[i]} - Rate: {roomRates[i]:C} - Total Cost: {totalCost:C} - Booking Date: {bookingDates[i]}");
-                }
+                } // added "-" as a separator to make it more oragnizes 
             }
         }
         catch (Exception ex)
