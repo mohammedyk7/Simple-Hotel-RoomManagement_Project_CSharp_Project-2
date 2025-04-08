@@ -230,7 +230,7 @@ class HotelReservationSystem
             bool found = false;
             for (int i = 0; i < roomCount; i++)
             {
-                if (isReserved[i] && guestNames[i].Equals(guestName, StringComparison.OrdinalIgnoreCase))
+                if (isReserved[i] && guestNames[i].ToLower() == guestName.ToLower())
                 {
                     double totalCost = roomRates[i] * nights[i];
                     Console.WriteLine($"Room {roomNumbers[i]} - Guest: {guestNames[i]} - Nights: {nights[i]} - Rate: {roomRates[i]:C} - Total Cost: {totalCost:C} - Booking Date: {bookingDates[i]}");
