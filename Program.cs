@@ -304,36 +304,40 @@ class HotelReservationSystem
     {
         try
         {
+            // Prompt the user to enter a room number
             Console.Write("Enter room number: ");
-            if (!int.TryParse(Console.ReadLine(), out int roomNumber))
+            if (!int.TryParse(Console.ReadLine(), out int roomNumber)) // Validate the input to ensure it's a valid integer
             {
-                Console.WriteLine("Invalid room number.");
-                return;
+                Console.WriteLine("Invalid room number."); // Inform the user if the input is invalid
+                return; // Exit the method
             }
 
+            // Find the index of the room number in the roomNumbers array
             int index = Array.IndexOf(roomNumbers, roomNumber, 0, roomCount);
-            if (index == -1)
+            if (index == -1) // If the room number is not found
             {
-                Console.WriteLine("Room not found.");
-                return;
+                Console.WriteLine("Room not found."); // Inform the user that the room does not exist
+                return; // Exit the method
             }
 
+            // Check if the room is not reserved
             if (!isReserved[index])
             {
-                Console.WriteLine("Room is not reserved.");
-                return;
+                Console.WriteLine("Room is not reserved."); // Inform the user that the room is not reserved
+                return; // Exit the method
             }
 
-            isReserved[index] = false;
-            guestNames[index] = string.Empty;
-            nights[index] = 0;
-            bookingDates[index] = default;
+            // Cancel the reservation by resetting the reservation details
+            isReserved[index] = false; // Mark the room as not reserved
+            guestNames[index] = string.Empty; // Clear the guest name
+            nights[index] = 0; // Reset the number of nights
+            bookingDates[index] = default; // Reset the booking date to its default value
 
+            // Inform the user that the reservation has been successfully canceled
             Console.WriteLine($"Reservation for room {roomNumber} has been canceled.");
         }
-        catch (Exception ex)
+        catch (Exception ex) // Handle any unexpected errors
         {
+            // Display an error message if an exception occurs
             Console.WriteLine($"An error occurred while canceling the reservation: {ex.Message}");
         }
-    }
-}
