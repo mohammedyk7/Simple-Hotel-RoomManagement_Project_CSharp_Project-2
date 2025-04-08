@@ -232,7 +232,7 @@ class HotelReservationSystem
             {
                 if (isReserved[i]) //true
                 {
-                    string storedName = guestNames[i].ToLower();
+                    string storedName = guestNames[i].ToLower(); //i defined the variable here asa string  (used to lower so the entered name will be accepted in any linguistic way..
                     string enteredName = guestName.ToLower();
 
                     if (storedName == enteredName)
