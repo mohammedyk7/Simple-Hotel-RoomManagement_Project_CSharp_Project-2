@@ -237,7 +237,7 @@ class HotelReservationSystem
 
                     if (storedName == enteredName)
                     {
-                        // matched reservation
+                         // matched reservation
                     }
                 }
                 
@@ -263,35 +263,39 @@ class HotelReservationSystem
     {
         try
         {
-            double highestAmount = 0;
-            string highestPayingGuest = "";
-            int highestPayingRoom = -1;
+            // Initialize variables to track the highest-paying guest and their details
+            double highestAmount = 0; // Stores the highest total cost found
+            string highestPayingGuest = ""; // Stores the name of the highest-paying guest
+            int highestPayingRoom = -1; // Stores the room number of the highest-paying guest
 
+            // Iterate through all rooms to find the highest-paying guest
             for (int i = 0; i < roomCount; i++)
             {
-                if (isReserved[i])
+                if (isReserved[i]) // Check if the room is reserved
                 {
-                    double totalCost = roomRates[i] * nights[i];
-                    if (totalCost > highestAmount)
+                    double totalCost = roomRates[i] * nights[i]; // Calculate the total cost for the reservation
+                    if (totalCost > highestAmount) // Check if this reservation has the highest cost so far
                     {
-                        highestAmount = totalCost;
-                        highestPayingGuest = guestNames[i];
-                        highestPayingRoom = roomNumbers[i];
+                        highestAmount = totalCost; // Update the highest amount
+                        highestPayingGuest = guestNames[i]; // Update the guest name
+                        highestPayingRoom = roomNumbers[i]; // Update the room number
                     }
                 }
             }
 
-            if (highestPayingRoom != -1)
+            // Display the highest-paying guest details if found
+            if (highestPayingRoom != -1) // Check if a valid highest-paying guest was found
             {
                 Console.WriteLine($"Highest paying guest is {highestPayingGuest} in room {highestPayingRoom} with a total cost of {highestAmount:C}.");
             }
             else
             {
-                Console.WriteLine("No reservations found.");
+                Console.WriteLine("No reservations found."); // No reservations exist
             }
         }
         catch (Exception ex)
         {
+            // Handle any unexpected errors during the process
             Console.WriteLine($"An error occurred while finding the highest-paying guest: {ex.Message}");
         }
     }
