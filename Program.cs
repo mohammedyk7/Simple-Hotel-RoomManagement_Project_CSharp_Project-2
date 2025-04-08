@@ -66,213 +66,258 @@ class HotelReservationSystem
 
     static void AddRoom()
     {
-        if (roomCount >= MAX_ROOMS)
+        try
         {
-            Console.WriteLine("Maximum capacity reached!");
-            return;
-        }
-
-        Console.Write("Enter room number: ");
-        if (!int.TryParse(Console.ReadLine(), out int roomNumber))
-        {
-            Console.WriteLine("Invalid room number.");
-            return;
-        }
-
-        // Check if the room number is unique
-        bool exists = false;
-        for (int i = 0; i < roomCount; i++)
-        {
-            if (roomNumbers[i] == roomNumber)
+            if (roomCount >= MAX_ROOMS)
             {
-                exists = true;
-                break;
+                Console.WriteLine("Maximum capacity reached!");
+                return;
             }
-        }
 
-        if (exists)
+            Console.Write("Enter room number: ");
+            if (!int.TryParse(Console.ReadLine(), out int roomNumber))
+            {
+                Console.WriteLine("Invalid room number.");
+                return;
+            }
+
+            // Check if the room number is unique
+            bool exists = false;
+            for (int i = 0; i < roomCount; i++)
+            {
+                if (roomNumbers[i] == roomNumber)
+                {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists)
+            {
+                Console.WriteLine("Room number already exists.");
+                return;
+            }
+
+            Console.Write("Enter daily rate: ");
+            if (!double.TryParse(Console.ReadLine(), out double dailyRate))
+            {
+                Console.WriteLine("Invalid daily rate.");
+                return;
+            }
+
+            // Validate the daily rate
+            if (dailyRate < 100)
+            {
+                Console.WriteLine("Daily rate must be at least 100.");
+                return;
+            }
+
+            // Storing details in an array
+            roomNumbers[roomCount] = roomNumber;
+            roomRates[roomCount] = dailyRate;
+            isReserved[roomCount] = false;
+            guestNames[roomCount] = string.Empty;
+            roomCount++;
+
+            Console.WriteLine($"Room {roomNumber} added with a daily rate of {dailyRate:C}.");
+        }
+        catch (Exception ex)
         {
-            Console.WriteLine("Room number already exists.");
-            return;
+            Console.WriteLine($"An error occurred while adding a room: {ex.Message}");
         }
-
-        Console.Write("Enter daily rate: ");
-        if (!double.TryParse(Console.ReadLine(), out double dailyRate))
-        {
-            Console.WriteLine("Invalid daily rate.");
-            return;
-        }
-
-        // Validate the daily rate
-        if (dailyRate < 100)
-        {
-            Console.WriteLine("Daily rate must be at least 100.");
-            return;
-        }
-
-        // Storing details in an array
-        roomNumbers[roomCount] = roomNumber;
-        roomRates[roomCount] = dailyRate;
-        isReserved[roomCount] = false;
-        guestNames[roomCount] = string.Empty;
-        roomCount++;
-
-        Console.WriteLine($"Room {roomNumber} added with a daily rate of {dailyRate:C}.");
     }
 
     static void ViewAllRooms()
     {
-        Console.WriteLine("\nAll Rooms:");
-        for (int i = 0; i < roomCount; i++) //loop through all rooms
+        try
         {
-            // Print room number and its status
-            Console.Write($"Room {roomNumbers[i]}: ");
+            Console.WriteLine("\nAll Rooms:");
+            for (int i = 0; i < roomCount; i++)
+            {
+                if (isReserved[i])
+                {
+                    double totalCost = roomRates[i] * nights[i];
+                    Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Reserved by: {guestNames[i]} - Total Cost: {totalCost:C}");
+                }
+                else
+                {
+                    Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Available");
+                }
+            }
         }
+        catch (Exception ex)
         {
-            if (isReserved[i])
-            {
-                double totalCost = roomRates[i] * nights[i];
-                Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Reserved by: {guestNames[i]} - Total Cost: {totalCost:C}");
-            }
-            else
-            {
-                Console.WriteLine($"Room {roomNumbers[i]} - Rate: {roomRates[i]:C} - Available");
-            }
+            Console.WriteLine($"An error occurred while viewing all rooms: {ex.Message}");
         }
     }
 
     static void MakeReservation()
     {
-        Console.Write("Enter room number: ");
-        if (!int.TryParse(Console.ReadLine(), out int roomNumber))
+        try
         {
-            Console.WriteLine("Invalid room number.");
-            return;
-        }
+            Console.Write("Enter room number: ");
+            if (!int.TryParse(Console.ReadLine(), out int roomNumber))
+            {
+                Console.WriteLine("Invalid room number.");
+                return;
+            }
 
-        int index = Array.IndexOf(roomNumbers, roomNumber, 0, roomCount);
-        if (index == -1)
+            int index = Array.IndexOf(roomNumbers, roomNumber, 0, roomCount);
+            if (index == -1)
+            {
+                Console.WriteLine("Room not found.");
+                return;
+            }
+
+            if (isReserved[index])
+            {
+                Console.WriteLine("Room is already reserved.");
+                return;
+            }
+
+            Console.Write("Enter guest name: ");
+            string guestName = Console.ReadLine();
+
+            Console.Write("Enter number of nights: ");
+            if (!int.TryParse(Console.ReadLine(), out int numberOfNights) || numberOfNights <= 0)
+            {
+                Console.WriteLine("Number of nights must be greater than 0.");
+                return;
+            }
+
+            guestNames[index] = guestName;
+            nights[index] = numberOfNights;
+            bookingDates[index] = DateTime.Now;
+            isReserved[index] = true;
+
+            Console.WriteLine($"Room {roomNumber} reserved for {guestName} for {numberOfNights} nights.");
+        }
+        catch (Exception ex)
         {
-            Console.WriteLine("Room not found.");
-            return;
+            Console.WriteLine($"An error occurred while making a reservation: {ex.Message}");
         }
-
-        if (isReserved[index])
-        {
-            Console.WriteLine("Room is already reserved.");
-            return;
-        }
-
-        Console.Write("Enter guest name: ");
-        string guestName = Console.ReadLine();
-
-        Console.Write("Enter number of nights: ");
-        if (!int.TryParse(Console.ReadLine(), out int numberOfNights) || numberOfNights <= 0)
-        {
-            Console.WriteLine("Number of nights must be greater than 0.");
-            return;
-        }
-
-        guestNames[index] = guestName;
-        nights[index] = numberOfNights;
-        bookingDates[index] = DateTime.Now;
-        isReserved[index] = true;
-
-        Console.WriteLine($"Room {roomNumber} reserved for {guestName} for {numberOfNights} nights.");
     }
 
     static void ViewReservations()
     {
-        Console.WriteLine("\nReservations:");
-        for (int i = 0; i < roomCount; i++)
+        try
         {
-            if (isReserved[i])
+            Console.WriteLine("\nReservations:");
+            for (int i = 0; i < roomCount; i++)
             {
-                double totalCost = roomRates[i] * nights[i];
-                Console.WriteLine($"Room {roomNumbers[i]} - Guest: {guestNames[i]} - Nights: {nights[i]} - Rate: {roomRates[i]:C} - Total Cost: {totalCost:C} - Booking Date: {bookingDates[i]}");
+                if (isReserved[i])
+                {
+                    double totalCost = roomRates[i] * nights[i];
+                    Console.WriteLine($"Room {roomNumbers[i]} - Guest: {guestNames[i]} - Nights: {nights[i]} - Rate: {roomRates[i]:C} - Total Cost: {totalCost:C} - Booking Date: {bookingDates[i]}");
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while viewing reservations: {ex.Message}");
         }
     }
 
     static void SearchReservationByGuestName()
     {
-        Console.Write("Enter guest name: ");
-        string guestName = Console.ReadLine();
-
-        bool found = false;
-        for (int i = 0; i < roomCount; i++)
+        try
         {
-            if (isReserved[i] && guestNames[i].Equals(guestName, StringComparison.OrdinalIgnoreCase))
+            Console.Write("Enter guest name: ");
+            string guestName = Console.ReadLine();
+
+            bool found = false;
+            for (int i = 0; i < roomCount; i++)
             {
-                double totalCost = roomRates[i] * nights[i];
-                Console.WriteLine($"Room {roomNumbers[i]} - Guest: {guestNames[i]} - Nights: {nights[i]} - Rate: {roomRates[i]:C} - Total Cost: {totalCost:C} - Booking Date: {bookingDates[i]}");
-                found = true;
+                if (isReserved[i] && guestNames[i].Equals(guestName, StringComparison.OrdinalIgnoreCase))
+                {
+                    double totalCost = roomRates[i] * nights[i];
+                    Console.WriteLine($"Room {roomNumbers[i]} - Guest: {guestNames[i]} - Nights: {nights[i]} - Rate: {roomRates[i]:C} - Total Cost: {totalCost:C} - Booking Date: {bookingDates[i]}");
+                    found = true;
+                }
+            }
+
+            if (!found)
+            {
+                Console.WriteLine("Reservation not found.");
             }
         }
-
-        if (!found)
+        catch (Exception ex)
         {
-            Console.WriteLine("Reservation not found.");
+            Console.WriteLine($"An error occurred while searching for a reservation: {ex.Message}");
         }
     }
 
     static void FindHighestPayingGuest()
     {
-        double highestAmount = 0;
-        string highestPayingGuest = "";
-        int highestPayingRoom = -1;
-
-        for (int i = 0; i < roomCount; i++)
+        try
         {
-            if (isReserved[i])
+            double highestAmount = 0;
+            string highestPayingGuest = "";
+            int highestPayingRoom = -1;
+
+            for (int i = 0; i < roomCount; i++)
             {
-                double totalCost = roomRates[i] * nights[i];
-                if (totalCost > highestAmount)
+                if (isReserved[i])
                 {
-                    highestAmount = totalCost;
-                    highestPayingGuest = guestNames[i];
-                    highestPayingRoom = roomNumbers[i];
+                    double totalCost = roomRates[i] * nights[i];
+                    if (totalCost > highestAmount)
+                    {
+                        highestAmount = totalCost;
+                        highestPayingGuest = guestNames[i];
+                        highestPayingRoom = roomNumbers[i];
+                    }
                 }
             }
-        }
 
-        if (highestPayingRoom != -1)
-        {
-            Console.WriteLine($"Highest paying guest is {highestPayingGuest} in room {highestPayingRoom} with a total cost of {highestAmount:C}.");
+            if (highestPayingRoom != -1)
+            {
+                Console.WriteLine($"Highest paying guest is {highestPayingGuest} in room {highestPayingRoom} with a total cost of {highestAmount:C}.");
+            }
+            else
+            {
+                Console.WriteLine("No reservations found.");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine("No reservations found.");
+            Console.WriteLine($"An error occurred while finding the highest-paying guest: {ex.Message}");
         }
     }
 
     static void CancelReservation()
     {
-        Console.Write("Enter room number: ");
-        if (!int.TryParse(Console.ReadLine(), out int roomNumber))
+        try
         {
-            Console.WriteLine("Invalid room number.");
-            return;
-        }
+            Console.Write("Enter room number: ");
+            if (!int.TryParse(Console.ReadLine(), out int roomNumber))
+            {
+                Console.WriteLine("Invalid room number.");
+                return;
+            }
 
-        int index = Array.IndexOf(roomNumbers, roomNumber, 0, roomCount);
-        if (index == -1)
+            int index = Array.IndexOf(roomNumbers, roomNumber, 0, roomCount);
+            if (index == -1)
+            {
+                Console.WriteLine("Room not found.");
+                return;
+            }
+
+            if (!isReserved[index])
+            {
+                Console.WriteLine("Room is not reserved.");
+                return;
+            }
+
+            isReserved[index] = false;
+            guestNames[index] = string.Empty;
+            nights[index] = 0;
+            bookingDates[index] = default;
+
+            Console.WriteLine($"Reservation for room {roomNumber} has been canceled.");
+        }
+        catch (Exception ex)
         {
-            Console.WriteLine("Room not found.");
-            return;
+            Console.WriteLine($"An error occurred while canceling the reservation: {ex.Message}");
         }
-
-        if (!isReserved[index])
-        {
-            Console.WriteLine("Room is not reserved.");
-            return;
-        }
-
-        isReserved[index] = false;
-        guestNames[index] = string.Empty;
-        nights[index] = 0;
-        bookingDates[index] = default;
-
-        Console.WriteLine($"Reservation for room {roomNumber} has been canceled.");
     }
 }
